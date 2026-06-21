@@ -2,7 +2,7 @@
 
 Browse 200,000 products newest-first, filter by category, paginate without missing or repeating anything even when new data arrives.
 
-**Live URL:** _add after deploy_  
+**Live URL:** https://codevector-2.onrender.com  
 **Stack:** FastAPI · PostgreSQL (Neon) · Deployed on Render
 
 ---
@@ -88,7 +88,7 @@ GET /products?cursor=abc123 → next page, anchored to your position
 
 ## Seed script
 
-Uses `psycopg2.execute_values` for bulk inserts — no Python loop, one round-trip per 10,000 rows. Generates 200k products in ~10–15 seconds depending on network latency to the database.
+Uses psycopg v3's `execute_values` for bulk inserts — no Python loop, one round-trip per 10,000 rows. Generates 200k products in ~10–15 seconds depending on network latency to the database.
 
 ---
 
@@ -103,10 +103,8 @@ Uses `psycopg2.execute_values` for bulk inserts — no Python loop, one round-tr
 
 ## How I used AI
 
-Used Claude to: scaffold the FastAPI boilerplate, write the HTML/CSS/JS for the bonus UI, and sanity-check the SQL row-value comparison syntax (`(a, b) < (x, y)`) which is standard SQL but easy to misremember.
+Used Claude to scaffold the FastAPI boilerplate, write the HTML/CSS/JS for the bonus UI, and check psycopg v3 syntax.
 
 The core pagination design (cursor vs offset, the composite index choice, the tiebreaker reasoning) I worked out myself — that's the part that matters and the part I'd need to explain and extend live.
-
-The seed script's bulk-insert approach I knew from prior work; Claude helped translate it to psycopg2's `execute_values` syntax quickly.
 
 Nothing Claude produced was wrong in a way I had to catch — the main value was speed on the boilerplate so I could focus on the interesting parts.
