@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — CodeVector</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --border: #222226;
+    --text: #e8e8ec;
+    --muted: #6b6b78;
+    --accent: #6366f1;
+    --accent-dim: #6366f115;
+    --green: #22c55e;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  .logo span { color: var(--accent); }
+  .header-stat {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 6px;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 52px);
+  }
+
+  /* ── Sidebar ── */
+  aside {
+    border-right: 1px solid var(--border);
+    padding: 24px 16px;
+    position: sticky;
+    top: 52px;
+    height: calc(100vh - 52px);
+    overflow-y: auto;
+  }
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding: 0 8px;
+  }
+  .cat-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 7px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .cat-btn:hover { background: var(--border); color: var(--text); }
+  .cat-btn.active { background: var(--accent-dim); color: var(--accent); }
+
+  /* ── Main ── */
+  main { padding: 24px 32px; }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .count-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Table ── */
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    text-align: left;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface); }
+
+  .id-cell {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .price-cell {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+  }
+  .cat-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: var(--mono);
+  }
+  .date-cell {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── Skeleton ── */
+  .skeleton td {
+    background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    height: 44px;
+  }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  /* ── Pagination ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .btn:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-dim); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) { background: #4f52d9; border-color: #4f52d9; }
+
+  .page-info {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Empty / Error ── */
+  .empty {
+    padding: 64px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .empty .icon { font-size: 28px; margin-bottom: 8px; }
+
+  .error-bar {
+    background: #2a0a0a;
+    border: 1px solid #5a1a1a;
+    color: #f87171;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">cv<span>/</span>products</div>
+  <div class="header-stat" id="totalStat">loading…</div>
+  <div class="header-stat"><span class="live-dot"></span>live</div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sidebar-label">Category</div>
+    <button class="cat-btn active" data-cat="">All products</button>
+    <div id="catList"></div>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <div class="page-title" id="pageTitle">All products</div>
+      <div class="count-badge" id="countBadge"></div>
+    </div>
+
+    <div class="error-bar" id="errorBar"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button class="btn" id="prevBtn" disabled>← Prev</button>
+      <button class="btn btn-primary" id="nextBtn" disabled>Next →</button>
+      <div class="page-info" id="pageInfo"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // ── Config ──────────────────────────────────────────────────────────────
+  const API = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+    ? 'http://localhost:8000'
+    : ''; // same origin when served from backend on Render
+
+  const PAGE_SIZE = 50;
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let category = '';
+  let cursorStack = []; // stack of cursors enabling "prev" navigation
+  let currentCursor = null;
+  let loading = false;
+
+  // ── DOM refs ─────────────────────────────────────────────────────────────
+  const tableBody = document.getElementById('tableBody');
+  const nextBtn   = document.getElementById('nextBtn');
+  const prevBtn   = document.getElementById('prevBtn');
+  const pageInfo  = document.getElementById('pageInfo');
+  const errorBar  = document.getElementById('errorBar');
+  const catList   = document.getElementById('catList');
+  const totalStat = document.getElementById('totalStat');
+  const pageTitle = document.getElementById('pageTitle');
+  const countBadge = document.getElementById('countBadge');
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function fmt(isoStr) {
+    const d = new Date(isoStr);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+      + ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function setError(msg) {
+    errorBar.style.display = msg ? 'block' : 'none';
+    errorBar.textContent = msg || '';
+  }
+
+  function showSkeleton() {
+    tableBody.innerHTML = Array.from({ length: 10 }, () =>
+      `<tr class="skeleton"><td></td><td></td><td></td><td></td><td></td></tr>`
+    ).join('');
+  }
+
+  // ── Fetch & render ────────────────────────────────────────────────────────
+  async function loadPage(cursor) {
+    if (loading) return;
+    loading = true;
+    setError('');
+    showSkeleton();
+    nextBtn.disabled = true;
+    prevBtn.disabled = true;
+
+    const params = new URLSearchParams({ limit: PAGE_SIZE });
+    if (category) params.set('category', category);
+    if (cursor)   params.set('cursor', cursor);
+
+    try {
+      const res = await fetch(`${API}/products?${params}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      renderRows(data.items);
+      countBadge.textContent = `${data.count} items`;
+
+      nextBtn.disabled = !data.has_next;
+      if (data.has_next) {
+        nextBtn.onclick = () => {
+          cursorStack.push(currentCursor);
+          currentCursor = data.next_cursor;
+          loadPage(currentCursor);
+        };
+      }
+
+      prevBtn.disabled = cursorStack.length === 0;
+      prevBtn.onclick = () => {
+        currentCursor = cursorStack.pop();
+        loadPage(currentCursor);
+      };
+
+      pageInfo.textContent = `page ${cursorStack.length + 1}`;
+    } catch (e) {
+      setError(`Failed to load products: ${e.message}`);
+      tableBody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="icon">⚠</div>Request failed</div></td></tr>`;
+    } finally {
+      loading = false;
+    }
+  }
+
+  function renderRows(items) {
+    if (!items.length) {
+      tableBody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="icon">◻</div>No products found</div></td></tr>`;
+      return;
+    }
+    tableBody.innerHTML = items.map(p => `
+      <tr>
+        <td class="id-cell">#${p.id}</td>
+        <td>${p.name}</td>
+        <td><span class="cat-tag">${p.category}</span></td>
+        <td class="price-cell">$${p.price.toFixed(2)}</td>
+        <td class="date-cell">${fmt(p.created_at)}</td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Categories ────────────────────────────────────────────────────────────
+  async function loadCategories() {
+    try {
+      const res = await fetch(`${API}/categories`);
+      const data = await res.json();
+      catList.innerHTML = data.categories.map(c => `
+        <button class="cat-btn" data-cat="${c}">${c}</button>
+      `).join('');
+      catList.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectCategory(btn.dataset.cat));
+      });
+    } catch (_) {}
+  }
+
+  async function loadStats() {
+    try {
+      const res = await fetch(`${API}/stats`);
+      const data = await res.json();
+      totalStat.textContent = `${data.total_products.toLocaleString()} products`;
+    } catch (_) {}
+  }
+
+  function selectCategory(cat) {
+    category = cat;
+    cursorStack = [];
+    currentCursor = null;
+
+    // highlight active
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.cat === cat);
+    });
+    pageTitle.textContent = cat || 'All products';
+    loadPage(null);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  loadStats();
+  loadCategories();
+  loadPage(null);
+</script>
+</body>
+</html>
