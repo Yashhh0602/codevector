@@ -5,8 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-import psycopg2
-import psycopg2.extras
+import psycopg
+from psycopg.rows import dict_row
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -34,7 +34,7 @@ def index():
 
 
 def get_conn():
-    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return psycopg.connect(DATABASE_URL, row_factory=dict_row)
 
 
 def encode_cursor(created_at: datetime, id: int) -> str:
@@ -57,18 +57,10 @@ def health():
 
 @app.get("/products")
 def list_products(
-    category: Optional[str] = Query(None, description="Filter by category"),
-    cursor: Optional[str] = Query(None, description="Pagination cursor from previous response"),
+    category: Optional[str] = Query(None),
+    cursor: Optional[str] = Query(None),
     limit: int = Query(50, ge=1, le=200),
 ):
-    """
-    Browse products newest-first with cursor-based pagination.
-
-    Cursor pagination guarantees:
-    - No duplicates: products are never repeated across pages
-    - No skips: inserting new products at the top does not shift your position
-    - O(log n) performance via index seek regardless of depth
-    """
     params = []
     conditions = []
 
