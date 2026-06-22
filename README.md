@@ -1,4 +1,4 @@
-# Product Browser — CodeVector Take-Home
+# Product Browser — CodeVector 
 
 Browse 200,000 products newest-first, filter by category, paginate without missing or repeating anything even when new data arrives.
 
