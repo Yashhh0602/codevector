@@ -1,8 +1,8 @@
-# Product Browser — CodeVector Take-Home
+# Product Browser — CodeVector 
 
 Browse 200,000 products newest-first, filter by category, paginate without missing or repeating anything even when new data arrives.
 
-**Live URL:** _add after deploy_  
+**Live URL:** (https://codevector-2.onrender.com)
 **Stack:** FastAPI · PostgreSQL (Neon) · Deployed on Render
 
 ---
@@ -50,6 +50,32 @@ Cursors are serialised as base64 JSON tokens so the client treats them as opaque
 ```
 
 ---
+
+## Infrastructure & Deployment
+
+Originally deployed on Render/Neon. Migrated to AWS to demonstrate cloud infrastructure skills, using Terraform for infrastructure-as-code.
+
+**Stack:** ECS Fargate · Application Load Balancer · RDS (Postgres) · ECR · IAM · CloudWatch
+
+**Architecture:**
+- FastAPI app runs as an ECS Fargate task behind an Application Load Balancer
+- RDS Postgres instance is private — not publicly accessible, locked down via security groups
+- Docker image built and pushed to ECR, deployed via ECS
+- IAM execution role scoped to only what ECS needs; task role intentionally has zero extra permissions (app makes no AWS API calls at runtime)
+- CloudWatch handles application logs
+- Full infra defined in Terraform (`/terraform`)
+
+Verified end-to-end: `/health` returns `200 OK` through the ALB's public DNS.
+
+*Note: infrastructure is provisioned on-demand for demos and torn down afterward (`terraform destroy`) to control cost on a personal AWS account — not a sign of a broken deployment.*
+
+### Verified deployment
+
+**Health check passing through the ALB:**
+![Health check response](./docs/screenshots/health-check.png)
+
+**ECS service running (1/1 tasks):**
+![ECS service running](./docs/screenshots/ecs-service.png)
 
 ## Run locally
 
