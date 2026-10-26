@@ -6,3 +6,12 @@ venv/
 *.egg-info/
 dist/
 .DS_Store
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log

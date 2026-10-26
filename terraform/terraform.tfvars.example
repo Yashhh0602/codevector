@@ -1,0 +1,6 @@
+aws_region    = "us-east-1"
+project_name  = "codevector"
+db_name       = "codevector"
+db_username   = "codevector_admin"
+db_password   = "CHANGE_ME_use_a_real_secret_not_this"
+ecr_image_uri = ""
