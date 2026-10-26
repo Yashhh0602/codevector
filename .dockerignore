@@ -1,0 +1,30 @@
+# Secrets and local config
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Infrastructure: Terraform code, state and variables never belong in the app image
+terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfvars
+**/.terraform/
+terraform.tfvars.example
+
+# AWS CLI installers and install logs
+AWSCLIV2.msi
+awscliv2.zip
+aws/
+install_log*.txt
+
+# VCS, caches and dependencies
+.git
+.gitignore
+__pycache__/
+**/__pycache__/
+**/*.pyc
+node_modules/
+**/node_modules/
+.venv/
+venv/
