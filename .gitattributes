@@ -1,0 +1,2 @@
+# Keep the language bar focused on the API and infra code
+*.html linguist-detectable=false
